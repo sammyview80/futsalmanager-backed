@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Saman Futsal",
+        "status": "open",
+        "description": "Greate Footsal appreciate saman"
+        ,
+        "price": "Rs1000",
+        "contactNumber": 9861488861,
+        "email": "Samanshrestha@gmail",
+        "address": "Changu Narayan Bhaktapur",
+        "averageRating": 5,
+        "user": "5d7a514b5d2c12c7449be045",
+        "owner": {
+            "name": "saman",
+            "address": "Changu",
+            "contact": "986148861",
+            "email": "sammyview80@gmail.com"
+            
+        },
+        "openAt": "7am",
+        "closeAt": "8pm"
+    }
+]
