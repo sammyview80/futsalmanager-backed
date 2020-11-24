@@ -37,7 +37,7 @@ exports.getFutsal = asyncHandler( async (req, res, next) => {
 //@access   Private: [admin, owner]
 exports.createFutsal = asyncHandler( async (req, res, next) => {
     const futsal = await Futsal.create(req.body);
-
+    
     return sendResponse(res, {
         status: "Sucess",
         data: futsal
@@ -45,6 +45,31 @@ exports.createFutsal = asyncHandler( async (req, res, next) => {
 });
 
 
+
+
+//@des      Update futsal 
+//@route    PUT /api/v1/futsals/:id
+//@access   Private: [admin, owner]
+exports.updateFutsal = asyncHandler( async (req, res, next) => {
+    const futsal = await Futsal.findByIdAndUpdate(req.params.id, req.body, {
+        new: true, 
+        runValidators: true
+    })
+    
+    if(!futsal){
+        return next(
+            new ApiError(400, `Couldn't perform action.`)
+            )
+        }
+        
+        
+        return sendResponse(res, {
+            status: "Sucess",
+            data: futsal
+        }, 200, 'application/json')
+    });
+
+    
 //@des      Delete futsal 
 //@route    Delete /api/v1/futsals/:id
 //@access   Private: [admin, owner]
@@ -55,21 +80,5 @@ exports.deleteFutsal = asyncHandler( async (req, res, next) => {
         status: "Sucess",
         data: [],
         message: 'Deletetion sucess.'
-    }, 200, 'application/json')
-});
-
-
-//@des      Update futsal 
-//@route    Update /api/v1/futsals/:id
-//@access   Private: [admin, owner]
-exports.updateFutsal = asyncHandler( async (req, res, next) => {
-    const futsal = await Futsal.findByIdAndUpdate(req.params.id, req.body, {
-        new: true, 
-        runValidators: true
-    });
-    
-    return sendResponse(res, {
-        status: "Sucess",
-        data: futsal
     }, 200, 'application/json')
 });

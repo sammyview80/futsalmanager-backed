@@ -1,10 +1,24 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const ApiError = require('../errors/ApiError');
+
+// Custom validator for mongooseSchema 
+const uniqueNameValidator = () =>  async function(v){
+    const count = await mongoose.models.Futsal.countDocuments({name: v });
+    if(count > 0){
+        return Promise.reject(new ApiError(409, `Duplicate name`))
+    }
+}
 
 const FutsalSchema = new mongoose.Schema({
     name: {
         type: String, 
-        required: [true, 'Futsal name is required.']
+        required: [true, 'Futsal name is required.'],
+        unique: true,
+        validate: {
+            // Validation for unique name
+            validator: uniqueNameValidator()
+        }
     },
     status: {
         type: String, 
@@ -102,15 +116,13 @@ const FutsalSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-})
+}, {strict: true})
 
 // Create bootcamp slug from the name 
 FutsalSchema.pre('save', function(next) {
     this.slug = slugify(this.name, {lower: true});
     next();
 });
-
-
 
 // Reservation system is remaining 
 // ReservedByUser 

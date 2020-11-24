@@ -18,12 +18,14 @@ const app = express()
 
 // Routes files
 const futsalsRoutes = require('./src/routes/futsals');
+const userRoutes = require('./src/routes/users');
 
 // Body parser
 app.use(express.json());
 
 // Adding routes middlewares
 app.use('/api/v1/futsals', futsalsRoutes);
+app.use('/api/v1/users', userRoutes);
 
 
 // Error handler 
