@@ -75,6 +75,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 //@access   Private: admin
 exports.deleteUser = asyncHandler( async (req, res, next) => {
     const user = await User.findByIdAndDelete(req.params.id);
+    
     if(!user){
         return next(
             new ApiError(400, `Couldn't perform update.`)

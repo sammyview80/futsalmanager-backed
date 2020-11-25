@@ -14,8 +14,10 @@ const router = express.Router();
 
 // Advance results
 const advanceResults = require('../middlewares/advanceResults');
+const { protect } = require('../middlewares/auth');
 const User = require('../models/User');
-const { route } = require('./futsals');
+
+router.use(protect);
 
 router
     .route('/')
