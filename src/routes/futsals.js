@@ -6,7 +6,8 @@ const {
     getFutsal,
     createFutsal,
     deleteFutsal,
-    updateFutsal
+    updateFutsal,
+    getMyFutsals
 } = require('../controllers/futsals');
 
 // Express router
@@ -33,10 +34,15 @@ router
     .post(protect, authorization('publisher', 'admin'), createFutsal)
 
 router
+    .route('/my')
+    .get(protect, authorization('publisher', 'admin'), getMyFutsals)
+
+router
     .route('/:id')
     .get(getFutsal)
     .delete(protect, authorization('publisher, admin'), deleteFutsal)
     .put(protect, authorization('publisher, admin'), updateFutsal)
+
 
 
 module.exports = router;

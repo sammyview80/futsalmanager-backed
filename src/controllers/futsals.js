@@ -109,3 +109,26 @@ exports.deleteFutsal = asyncHandler( async (req, res, next) => {
         message: 'Deletetion sucess.'
     }, 200, 'application/json')
 });
+
+
+//@des      Get all futsals by the publisher
+//@route    GET /api/v1/futsals/myfutsals
+//@access   Private: [admin, owner]
+exports.getMyFutsals = asyncHandler( async (req, res, next) => {
+    // Find the futsal by userId
+
+    console.log('my futsals')
+    const futsals = await Futsal.find({user: req.user._id})
+
+    // If there is no futsals
+    if(!futsals){
+        return next(
+            ApiError.notfound(`Futsals not found for user ${req.user._id} `)
+        )
+    };
+
+    return sendResponse(res, {
+        status: "Sucess",
+        data: futsals
+    }, 200, 'application/json')
+});
