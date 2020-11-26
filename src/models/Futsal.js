@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const ApiError = require('../errors/ApiError');
+const geocoder = require('../helpers/geoCoder');
 
 // Custom validator for mongooseSchema 
 const uniqueNameValidator = () =>  async function(v){
@@ -116,7 +117,10 @@ const FutsalSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-}, {strict: true})
+}, {
+    toJSON: { virtuals: true},
+    toObject: { virtuals: true}
+})
 
 // Create bootcamp slug from the name 
 FutsalSchema.pre('save', function(next) {
@@ -124,9 +128,33 @@ FutsalSchema.pre('save', function(next) {
     next();
 });
 
-// Reservation system is remaining 
-// ReservedByUser 
-// Time stamp
+// Geocode and create location field
+FutsalSchema.pre('save', async function(next) {
+    const loc = await geocoder.geocode(this.address);
+    this.location = {
+        type: 'Point',
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formattedAddress,
+        street: loc[0].streetName,
+        city: loc[0].city,
+        state: loc[0].stateCode,
+        zipcode: loc[0].zipcode,
+        country: loc[0].countryCode
+    }
+    // Donot save address in DB
+    this.address = undefined;
+    next()
+});
+
+// Reverse populate with virtuals
+FutsalSchema.virtual(
+    'reservation', {
+        ref: 'Reservation',
+        localField: '_id',
+        foreignField: 'futsal',
+        justOne: false
+    }
+)
 
 
 

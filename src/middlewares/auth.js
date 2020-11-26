@@ -35,3 +35,16 @@ exports.protect = asyncHandler( async (req, res, next) => {
     }
 });
 
+
+// Authorizations
+exports.authorization = (...roles) => {
+    return (req, res, next) => {
+        if(!roles.includes(req.user.role)){
+            return next(
+                ApiError.unauthorized(`Unauthorized.`)
+            )
+        }
+        next();
+    }
+}
+

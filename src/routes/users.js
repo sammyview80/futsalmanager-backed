@@ -14,10 +14,11 @@ const router = express.Router();
 
 // Advance results
 const advanceResults = require('../middlewares/advanceResults');
-const { protect } = require('../middlewares/auth');
+const { protect, authorization } = require('../middlewares/auth');
 const User = require('../models/User');
 
 router.use(protect);
+router.use(authorization('admin'))
 
 router
     .route('/')

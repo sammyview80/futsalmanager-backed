@@ -19,13 +19,17 @@ exports.getFutsals = asyncHandler( async (req, res, next) => {
 //@route    GET /api/v1/futsals/:id
 //@access   Public
 exports.getFutsal = asyncHandler( async (req, res, next) => {
-    const futsal = await Futsal.findById(req.params.id);
+    let futsal = await Futsal.findById(req.params.id);
 
     if(!futsal){
         return next(
             ApiError.notfound(`id of ${req.params.id} couldn't found.`)
         )
     }
+    futsal = await futsal.populate({
+        path: 'reservation',
+        select: 'reserverName startsAt endsAt'
+    })
     return sendResponse(res, {
         status: "Sucess",
         data: futsal
@@ -36,6 +40,8 @@ exports.getFutsal = asyncHandler( async (req, res, next) => {
 //@route    POST /api/v1/futsals
 //@access   Private: [admin, owner]
 exports.createFutsal = asyncHandler( async (req, res, next) => {
+    req.body.user = req.user.id;
+
     const futsal = await Futsal.create(req.body);
     
     return sendResponse(res, {
@@ -51,22 +57,29 @@ exports.createFutsal = asyncHandler( async (req, res, next) => {
 //@route    PUT /api/v1/futsals/:id
 //@access   Private: [admin, owner]
 exports.updateFutsal = asyncHandler( async (req, res, next) => {
-    const futsal = await Futsal.findByIdAndUpdate(req.params.id, req.body, {
-        new: true, 
-        runValidators: true
-    })
+    let futsal = await Futsal.findById(req.params.id);
     
     if(!futsal){
         return next(
-            new ApiError(400, `Couldn't perform action.`)
+            new ApiError(400, `Futsal of id ${req.params.id} couldn't be found.`)
             )
-        }
-        
-        
-        return sendResponse(res, {
-            status: "Sucess",
-            data: futsal
-        }, 200, 'application/json')
+    }
+    
+    if(futsal.user.toString() !== req.user.id && req.user.role !== 'admin'){
+        return next(
+            ApiError.unauthorized(`User of id ${req.user.id} is unauthorized.`)
+        )
+    }
+
+    futsal = await Futsal.findByIdAndUpdate(req.params.id, req.body, {
+        new: true, 
+        runValidators: true
+    })
+
+    return sendResponse(res, {
+        status: "Sucess",
+        data: futsal
+    }, 200, 'application/json')
     });
 
     
@@ -74,7 +87,21 @@ exports.updateFutsal = asyncHandler( async (req, res, next) => {
 //@route    Delete /api/v1/futsals/:id
 //@access   Private: [admin, owner]
 exports.deleteFutsal = asyncHandler( async (req, res, next) => {
-    const futsal = await Futsal.findByIdAndDelete(req.params.id);
+    let futsal = await Futsal.findById(req.params.id);
+    
+    if(!futsal){
+        return next(
+            new ApiError(400, `Futsal of id ${req.params.id} couldn't be found.`)
+            )
+    }
+    
+    if(futsal.user.toString() !== req.user.id && req.user.role !== 'admin'){
+        return next(
+            ApiError.unauthorized(`User of id ${req.user.id} is unauthorized.`)
+        )
+    }
+
+    await futsal.remove();
     
     return sendResponse(res, {
         status: "Sucess",

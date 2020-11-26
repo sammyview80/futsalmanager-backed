@@ -22,6 +22,7 @@ const app = express()
 const futsalsRoutes = require('./src/routes/futsals');
 const userRoutes = require('./src/routes/users');
 const authRoutes = require('./src/routes/auth');
+const reservationRoutes = require('./src/routes/reservations');
 
 
 // Body parser
@@ -39,6 +40,7 @@ if(process.env.NODE_ENV === 'development') {
 app.use('/api/v1/futsals', futsalsRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/reservations', reservationRoutes);
 
 
 

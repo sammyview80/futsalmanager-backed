@@ -18,4 +18,5 @@ const sendTokenResponse = (user, statusCode, res) => {
     }, statusCode, 'application/json', setCookie=true, options=options)
 }
 
+
 module.exports = sendTokenResponse;
