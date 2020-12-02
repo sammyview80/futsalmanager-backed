@@ -88,14 +88,13 @@ exports.updateFutsal = asyncHandler( async (req, res, next) => {
 //@access   Private: [admin, owner]
 exports.deleteFutsal = asyncHandler( async (req, res, next) => {
     let futsal = await Futsal.findById(req.params.id);
-    
     if(!futsal){
         return next(
             new ApiError(400, `Futsal of id ${req.params.id} couldn't be found.`)
             )
     }
     
-    if(futsal.user.toString() !== req.user.id && req.user.role !== 'admin'){
+    if(futsal.user.toString() !== req.user.id.toString() && req.user.role !== 'admin'){
         return next(
             ApiError.unauthorized(`User of id ${req.user.id} is unauthorized.`)
         )

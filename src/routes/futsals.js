@@ -40,8 +40,8 @@ router
 router
     .route('/:id')
     .get(getFutsal)
-    .delete(protect, authorization('publisher, admin'), deleteFutsal)
-    .put(protect, authorization('publisher, admin'), updateFutsal)
+    .delete(protect, authorization('publisher', 'admin'), deleteFutsal)
+    .put(protect, authorization('publisher', 'admin'), updateFutsal)
 
 
 

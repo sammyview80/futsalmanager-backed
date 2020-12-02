@@ -106,12 +106,12 @@ const FutsalSchema = new mongoose.Schema({
         
     },
     openAt: {
-        type:String,
-        required: [true, 'Opening time required.'],
+        type: Date,
+        required: [true, 'open time is required.'],
     },
     closeAt: {
-        type: String,
-        required: [true, 'Closing time required.']
+        type: Date,
+        required: [true, 'close time is required.'],
     },
     createdAt: {
         type: Date,

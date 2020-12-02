@@ -13,4 +13,10 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${conn.connection.host}`.cyan.underline.bold);
 }
 
+// const samanMapquest = {
+//     GEOCODER_PROVIDER=mapquest
+//     GEOCODER_API_KEY=cvRfT9REdQJI9jm70VYxvTj5QO9np7yV
+// }
+
 module.exports = connectDB;
+

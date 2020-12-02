@@ -21,6 +21,12 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.15",
     "node-geocoder": "^3.27.0",
+    "nominatim-geocoder": "^0.1.4",
+    "passport": "^0.4.1",
+    "passport-facebook-token": "^4.0.0",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-google-oauth20": "^2.0.0",
+    "simple-bing-geocoder": "^0.1.0",
     "slugify": "^1.4.6"
   },
   "devDependencies": {
