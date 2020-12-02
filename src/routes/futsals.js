@@ -15,6 +15,7 @@ const router = express.Router();
 
 // Include other resource routers
 const reservationRoutes = require('./reservations');
+const reviewsRoutes = require('./reviews');
 
 // Advance results
 const advanceResults = require('../middlewares/advanceResults');
@@ -23,7 +24,7 @@ const Futsal = require('../models/Futsal');
 
 // Re-route into other resource routers
 router.use('/:futsalId/reservations', reservationRoutes)
-
+router.use('/:futsalId/reviews', reviewsRoutes)
 
 router
     .route('/')

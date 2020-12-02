@@ -23,7 +23,7 @@ const futsalsRoutes = require('./src/routes/futsals');
 const userRoutes = require('./src/routes/users');
 const authRoutes = require('./src/routes/auth');
 const reservationRoutes = require('./src/routes/reservations');
-
+const reviewsRoutes = require('./src/routes/reviews');
 
 // Body parser
 app.use(express.json());
@@ -41,6 +41,7 @@ app.use('/api/v1/futsals', futsalsRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/reservations', reservationRoutes);
+app.use('/api/v1/reviews', reviewsRoutes);
 
 
 

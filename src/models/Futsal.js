@@ -155,7 +155,22 @@ FutsalSchema.virtual(
         justOne: false
     }
 )
+FutsalSchema.virtual(
+    'reviews', {
+        ref: 'Review',
+        localField: '_id',
+        foreignField: 'futsal',
+        justOne: false
+    }
+)
 
+// Cascade delete reviews and reservations when a futsal is deleted.
+FutsalSchema.pre('remove', async function(next){
+    await this.model('Reservation').deleteMany({
+        futsal: this._id
+    });
+    next();
+})
 
 
 module.exports = mongoose.model('Futsal', FutsalSchema);
