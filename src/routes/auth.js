@@ -5,7 +5,8 @@ const {
     register,
     login,
     logout,
-    getMe
+    getMe,
+    forgetPassword
 } = require('../controllers/auth');
 const { protect } = require('../middlewares/auth');
 
@@ -28,4 +29,11 @@ router
     .route('/me')
     .get(protect, getMe)
 
+router
+    .route('/logout')
+    .get()
+
+router
+    .route('/forgetpassword')
+    .post(forgetPassword)
 module.exports = router;

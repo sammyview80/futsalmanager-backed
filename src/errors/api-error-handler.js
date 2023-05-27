@@ -4,7 +4,7 @@ const ApiError = require('./ApiError');
 const errorHandler = (error, req, res, next) => {
 
     // Log to console fro dev
-    console.log(error);
+    console.log(error.message);
     let err = {...error};
     err.message = error.message;
 
@@ -23,12 +23,14 @@ const errorHandler = (error, req, res, next) => {
         const message = Object.values(error.errors).map(val => val.message);
         err = ApiError.validationError(message);
     }
-    
+    error.sucess= "Failed"
+    console.log(error);
 
-    sendResponse(res, {
-        sucess: 'Failed',
-        error: err.message
-    }, err.code || 500, 'application/json')
+    return res.json(error);
+    // sendResponse(res, {
+    //     sucess: 'Failed',
+    //     error: err.message
+    // }, err.code || 500, 'application/json')
 }
 
 module.exports = errorHandler;

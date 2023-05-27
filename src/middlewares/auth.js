@@ -2,12 +2,13 @@ const ApiError = require("../errors/ApiError");
 const asyncHandler = require("../helpers/asyncHandler");
 const jwt = require('jsonwebtoken');
 const User = require("../models/User");
+const Futsal = require("../models/Futsal");
+const Reservation = require("../models/Reservation");
 
 
 // Protect routes
 exports.protect = asyncHandler( async (req, res, next) => {
     let token;
-
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         // Token from bearer authorization header
         token = req.headers.authorization.split(' ')[1];
@@ -27,6 +28,14 @@ exports.protect = asyncHandler( async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         req.user = await User.findById(decoded.id);
+
+        if(req.user.role === 'publisher'){
+            req.futsalId = await Futsal.find({user: req.user._id});
+            req.reservations = await Reservation.find();
+        }
+        
+        console.log(req.reservations);
+
         next()
     } catch (err) {
         return next(

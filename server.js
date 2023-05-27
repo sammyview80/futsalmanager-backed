@@ -1,10 +1,17 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const colors = require('colors');
+const cors = require('cors')
 const morgan = require('morgan');
 const connectDB = require('./configs/db');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./src/errors/api-error-handler');
+
+// corsConfig
+// const corsOptions = {
+//     origin: 'http://http://localhost:3000/',
+//     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+//   }
 
 
 // Initializing environment vairables
@@ -35,6 +42,13 @@ app.use(cookieParser())
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+
+// Use of cors 
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', "DELETE"],
+    credentials: true
+  }));
 
 // Adding routes middlewares
 app.use('/api/v1/futsals', futsalsRoutes);

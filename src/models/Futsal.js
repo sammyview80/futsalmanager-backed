@@ -23,7 +23,7 @@ const FutsalSchema = new mongoose.Schema({
     },
     status: {
         type: String, 
-        enum: ['open', 'closed'],
+        enum: ['open', 'close'],
         default: 'open'
     },
     location: {
@@ -70,6 +70,7 @@ const FutsalSchema = new mongoose.Schema({
         required: [true, 'Address is required.']
     },
     averageRating: {
+        default: 1,
         type: Number,
         min: [1, 'Rating must be at least 1'],
         max: [10, 'Rating must cannot be more than 10']

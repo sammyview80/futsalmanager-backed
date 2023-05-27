@@ -4,6 +4,9 @@ const asyncHandler = require('../helpers/asyncHandler');
 const { sendResponse } = require("../helpers/response");
 const sendTokenResponse = require("../helpers/sentTokenResponse");
 
+// Mailgun
+const sendMail = require('../utils/mailGun');
+
 
 // Model user 
 const User = require('../models/User');
@@ -28,6 +31,7 @@ exports.register = asyncHandler(async (req, res, next) =>{
 //@route    POST /api/v1/auth/login
 //@access   Public
 exports.login = asyncHandler(async (req, res, next) =>{
+    console.log("login")
     const {email, password} = req.body;
 
     // Validate email and password
@@ -88,4 +92,60 @@ exports.getMe = asyncHandler(async (req, res, next) => {
         status: "Sucess",
         data: user
     }, 200, 'application/json')
+});
+
+
+// @desc    Forget password
+// @route   POST /api/v1/auth/forgetpassword
+// @access  PUblic
+
+exports.forgetPassword = asyncHandler(async (req, res, next) => {
+    // 3. Send email with the message
+    // 4. Send response
+    
+    // 1. First find the user with the email.
+    const user = await User.findOne({email: req.body.email});
+    
+    // 1.1 If don't exists then throw error 
+    if(!user){
+        return next(
+            ApiError.notfound(`User of email: ${req.body.email} couldn't be found.`)
+            )
+        }
+        
+    // 1.2 Else Proceed to Get reset token.
+    const resetToken = user.getResetPasswordToken();
+
+    // Url to reset token
+    const message = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
+        
+    // 2. Create a message with the resettoken as url
+    const data = {
+        from: `Futsal Manager <${process.env.COMPANY}>`,
+        to: req.body.email,
+        subject: `Password Reset Link.`,
+        html: `
+            <h1>Please click the following link to reset password</h1>
+            <p>${message}</p>
+            <hr/>
+            <p>Please note this is one time activation</p>
+        `
+    }
+    
+    // Send email with the reset token.
+    sendMail.messages().send(data, (error, body) => {
+        if(error){
+            return next(
+                ApiError.serverError(`Something went wrong: ${error.message}.`)
+            )
+        };
+        console.log(body)
+        const data = {
+            status: "Sucess",
+            data: {
+                message: `Email sent to ${req.body.email}. Follow the instruction to reset your password.`
+            }
+        };
+        return sendResponse(res, data, 200, 'application/json')
+    })
 });

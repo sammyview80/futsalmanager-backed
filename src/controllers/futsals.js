@@ -87,6 +87,7 @@ exports.updateFutsal = asyncHandler( async (req, res, next) => {
 //@route    Delete /api/v1/futsals/:id
 //@access   Private: [admin, owner]
 exports.deleteFutsal = asyncHandler( async (req, res, next) => {
+    console.log('deleting futsals')
     let futsal = await Futsal.findById(req.params.id);
     if(!futsal){
         return next(
@@ -116,7 +117,6 @@ exports.deleteFutsal = asyncHandler( async (req, res, next) => {
 exports.getMyFutsals = asyncHandler( async (req, res, next) => {
     // Find the futsal by userId
 
-    console.log('my futsals')
     const futsals = await Futsal.find({user: req.user._id})
 
     // If there is no futsals
@@ -125,9 +125,12 @@ exports.getMyFutsals = asyncHandler( async (req, res, next) => {
             ApiError.notfound(`Futsals not found for user ${req.user._id} `)
         )
     };
-
+    console.log(req.reservations);
     return sendResponse(res, {
         status: "Sucess",
-        data: futsals
+        data: {
+            futsals: futsals,
+            reservations: req.reservations
+        }
     }, 200, 'application/json')
 });

@@ -4,7 +4,7 @@ exports.sendResponse = (...args) => {
 
     // If there is cookie set in response
     if(setCookie) {
-        return res.status(statusCode).cookie('token', data.token, options).json(data);
+        return res.status(statusCode).cookie('token', data.token, options).json({...data, cookies: true, });
     }
     return res.status(statusCode).json(data);
 }

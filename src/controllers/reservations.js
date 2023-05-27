@@ -202,22 +202,35 @@ exports.deleteReservation = asyncHandler( async (req, res, next) => {
             ApiError.notfound(`Reservation of id ${req.params.id} couldn't be found.`)
         )
     }
-
+    console.log(req.futsalId !== undefined);
+    const LoginedUserFutsals = [];
+    if(req.futsalId !== undefined){
+        req.futsalId.forEach(element => {
+            LoginedUserFutsals.push(element._id.toString())
+        });
+    }
+    console.log(LoginedUserFutsals);
+    console.log(reservation.futsal.toString());
+    console.log(LoginedUserFutsals.includes(reservation.futsal.toString()))
 
     // Check the created user and requested user is same 
     if(reservation.user.toString() !== req.user._id.toString()){
-        return next(
-            ApiError.unauthorized(`User of id: ${req.user._id} unauthorized.`)
-        )
+        if(!LoginedUserFutsals.includes(reservation.futsal.toString())){
+            return next(
+                ApiError.unauthorized(`User of id: ${req.user._id} unauthorized.`)
+            )
+        }
     }
     
     // If same then delete 
-    reservation = await Reservation.findByIdAndDelete(req.params.id);
+    await Reservation.findByIdAndDelete(req.params.id);
+
+    reservation = await Reservation.find({user: req.user._id});
 
     // Send sucess response
     return sendResponse(res, {
         status: "Sucess",
-        data: [],
+        data: reservation,
         message: 'Deletion Sucess'
     }, 200, 'application/json')
 });
